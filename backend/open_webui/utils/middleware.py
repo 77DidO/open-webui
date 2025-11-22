@@ -1405,6 +1405,7 @@ async def process_chat_payload(request, form_data, user, metadata, model):
     # -> Chat Files
 
     form_data = apply_params_to_form_data(form_data, model)
+    log.info(f"DEBUG: process_chat_payload headers: {request.headers}")
     log.debug(f"form_data: {form_data}")
 
     system_message = get_system_message(form_data.get("messages", []))
@@ -1576,11 +1577,15 @@ async def process_chat_payload(request, form_data, user, metadata, model):
                 )
 
         if "web_search" in features and features["web_search"]:
-            # Skip forced RAG web search when native FC is enabled - model can use web_search tool
-            if metadata.get("params", {}).get("function_calling") != "native":
-                form_data = await chat_web_search_handler(
-                    request, form_data, extra_params, user
-                )
+            # Custom RAGWiame: Support use_rag flag + Upstream native FC check
+            if metadata.get("use_rag", True):
+                # Skip forced RAG web search when native FC is enabled - model can use web_search tool
+                if metadata.get("params", {}).get("function_calling") != "native":
+                    form_data = await chat_web_search_handler(
+                        request, form_data, extra_params, user
+                    )
+            else:
+                log.info("Bypassing web search due to metadata.use_rag: false")
 
         if "image_generation" in features and features["image_generation"]:
             # Skip forced image generation when native FC is enabled - model can use generate_image tool
@@ -1864,10 +1869,19 @@ async def process_chat_payload(request, form_data, user, metadata, model):
 
     if file_context_enabled:
         try:
-            form_data, flags = await chat_completion_files_handler(
-                request, form_data, extra_params, user
-            )
-            sources.extend(flags.get("sources", []))
+            log.info(f"DEBUG: Middleware metadata: {metadata}")
+            use_rag_val = metadata.get("use_rag", True)
+            # Handle string "false" or boolean False
+            should_use_rag = str(use_rag_val).lower() != "false" if isinstance(use_rag_val, (str, bool)) else True
+            log.info(f"DEBUG: RAG Decision - Raw: {use_rag_val}, Computed: {should_use_rag}")
+
+            if should_use_rag:
+                form_data, flags = await chat_completion_files_handler(
+                    request, form_data, extra_params, user
+                )
+                sources.extend(flags.get("sources", []))
+            else:
+                log.info("Bypassing RAG (files) due to metadata.use_rag: false")
         except Exception as e:
             log.exception(e)
 

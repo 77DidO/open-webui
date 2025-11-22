@@ -142,7 +142,30 @@ async def send_post_request(
         r = await session.post(
             url,
             data=payload,
-            headers=headers,
+            headers={
+                "Content-Type": "application/json",
+                **({"Authorization": f"Bearer {key}"} if key else {}),
+                **(
+                    {
+                        "X-OpenWebUI-User-Name": quote(user.name, safe=" "),
+                        "X-OpenWebUI-User-Id": user.id,
+                        "X-OpenWebUI-User-Email": user.email,
+                        "X-OpenWebUI-User-Role": user.role,
+                        **(
+                            {"X-OpenWebUI-Chat-Id": metadata.get("chat_id")}
+                            if metadata and metadata.get("chat_id")
+                            else {}
+                        ),
+                    }
+                    if ENABLE_FORWARD_USER_INFO_HEADERS and user
+                    else {}
+                ),
+                **(
+                    {"X-Use-RAG": metadata.get("use_rag")}
+                    if metadata and metadata.get("use_rag")
+                    else {}
+                ),
+            },
             ssl=AIOHTTP_CLIENT_SESSION_SSL,
         )
 
@@ -1259,6 +1282,17 @@ async def generate_chat_completion(
     bypass_system_prompt: bool = False,
     db: Session = Depends(get_session),
 ):
+    print(f"[OPENWEBUI] ollama.py generate_chat_completion called. Model: {form_data.get('model')}", flush=True)
+    
+    # Extract X-Use-RAG header and add to metadata
+    use_rag_header = request.headers.get("X-Use-RAG")
+    if use_rag_header:
+        print(f"[OPENWEBUI] ollama.py found X-Use-RAG header: {use_rag_header}", flush=True)
+        if "metadata" not in form_data:
+            form_data["metadata"] = {}
+        form_data["metadata"]["use_rag"] = use_rag_header
+
+
     if BYPASS_MODEL_ACCESS_CONTROL:
         bypass_filter = True
 

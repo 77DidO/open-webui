@@ -180,6 +180,11 @@ async def get_headers_and_cookies(
     if config.get("headers") and isinstance(config.get("headers"), dict):
         headers = {**headers, **config.get("headers")}
 
+    # Forward X-Use-RAG header if present in the request
+    if request.headers.get("X-Use-RAG"):
+        headers["X-Use-RAG"] = request.headers.get("X-Use-RAG")
+        print(f"[OPENWEBUI] Forwarding X-Use-RAG header: {headers['X-Use-RAG']}", flush=True)
+
     return headers, cookies
 
 
@@ -803,6 +808,8 @@ async def generate_chat_completion(
     bypass_system_prompt: bool = False,
     db: Session = Depends(get_session),
 ):
+    print(f"[OPENWEBUI] openai.py generate_chat_completion called. Model: {form_data.get('model')}", flush=True)
+    print(f"[OPENWEBUI] Incoming Headers: {request.headers}", flush=True)
     if BYPASS_MODEL_ACCESS_CONTROL:
         bypass_filter = True
 
@@ -951,6 +958,7 @@ async def generate_chat_completion(
         # Check if response is SSE
         if "text/event-stream" in r.headers.get("Content-Type", ""):
             streaming = True
+            log.info(f"[OPENWEBUI] Streaming response started for {request_url}")
             return StreamingResponse(
                 stream_chunks_handler(r.content),
                 status_code=r.status,
@@ -962,9 +970,11 @@ async def generate_chat_completion(
         else:
             try:
                 response = await r.json()
+                log.info(f"[OPENWEBUI] Received JSON response from {request_url}: {response}")
             except Exception as e:
-                log.error(e)
+                log.error(f"[OPENWEBUI] Error parsing JSON from {request_url}: {e}")
                 response = await r.text()
+                log.info(f"[OPENWEBUI] Received Text response from {request_url}: {response}")
 
             if r.status >= 400:
                 if isinstance(response, (dict, list)):

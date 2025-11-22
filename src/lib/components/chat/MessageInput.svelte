@@ -120,6 +120,8 @@
 	export let imageGenerationEnabled = false;
 	export let webSearchEnabled = false;
 	export let codeInterpreterEnabled = false;
+	export let ragEnabled = true;
+	$: console.log('ragEnabled in MessageInput:', ragEnabled);
 
 	let inputContent = null;
 
@@ -1500,6 +1502,35 @@
 											<PlusAlt className="size-5.5" />
 										</div>
 									</InputMenu>
+
+									{#if true}
+										<Tooltip
+											content={ragEnabled ? $i18n.t('RAG Enabled') : $i18n.t('RAG Disabled')}
+											placement="top"
+										>
+											<button
+												aria-label={ragEnabled ? $i18n.t('Disable RAG') : $i18n.t('Enable RAG')}
+												aria-pressed={ragEnabled}
+												on:click|preventDefault={() => (ragEnabled = !ragEnabled)}
+												type="button"
+												class="group px-2 py-[7px] mx-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {ragEnabled
+													? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-400/10 dark:hover:bg-emerald-600/10 border border-emerald-200/40 dark:border-emerald-500/20'
+													: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+													class="size-3.5"
+												>
+													<path
+														d="M10.75 16.82A7.462 7.462 0 0115 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0018 15.06v-11a.75.75 0 00-.546-.721A9.006 9.006 0 0015 3a8.963 8.963 0 00-4.25 1.065V16.82zM9.25 4.065A8.963 8.963 0 005 3c-.85 0-1.673.118-2.454.339A.75.75 0 002 4.06v11a.75.75 0 00.954.721A7.506 7.506 0 015 15.5c1.579 0 3.042.487 4.25 1.32V4.065z"
+													/>
+												</svg>
+												<span>{ragEnabled ? 'RAG' : 'RAG'}</span>
+											</button>
+										</Tooltip>
+									{/if}
 
 									{#if showWebSearchButton || showImageGenerationButton || showCodeInterpreterButton || showToolsButton || (toggleFilters && toggleFilters.length > 0)}
 										<div

@@ -9,6 +9,7 @@
 
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
 	import { get, type Unsubscriber, type Writable } from 'svelte/store';
 	import type { i18n as i18nType } from 'i18next';
@@ -138,11 +139,14 @@
 	let imageGenerationEnabled = false;
 	let webSearchEnabled = false;
 	let codeInterpreterEnabled = false;
+	let ragEnabled = true;
+	$: console.log('ragEnabled changed:', ragEnabled);
 
 	let showCommands = false;
 
 	let generating = false;
 	let generationController = null;
+	let mounted = false;
 
 	let chat = null;
 	let tags = [];
@@ -162,6 +166,11 @@
 
 	$: if (chatIdProp) {
 		navigateHandler();
+	}
+
+	$: if (browser && mounted) {
+		console.log('Saving ragEnabled to localStorage:', ragEnabled);
+		localStorage.setItem('ragEnabled', ragEnabled);
 	}
 
 	const navigateHandler = async () => {
@@ -551,6 +560,12 @@
 	onMount(async () => {
 		loading = true;
 		console.log('mounted');
+		const savedRag = localStorage.getItem('ragEnabled');
+		console.log('Loaded ragEnabled from localStorage:', savedRag);
+		if (savedRag !== null) {
+			ragEnabled = savedRag === 'true';
+		}
+		mounted = true;
 		window.addEventListener('message', onMessageHandler);
 		$socket?.on('events', chatEventHandler);
 
@@ -1945,12 +1960,17 @@
 			}
 		}
 
+		console.log('Sending message with ragEnabled:', ragEnabled);
+
 		const res = await generateOpenAIChatCompletion(
 			localStorage.token,
 			{
 				stream: stream,
 				model: model.id,
 				messages: messages,
+				metadata: {
+					use_rag: ragEnabled ?? true
+				},
 				params: {
 					...$settings?.params,
 					...params,
@@ -2551,6 +2571,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									toolServers={$toolServers}
 									{generating}
 									{stopResponse}
@@ -2591,6 +2612,7 @@
 									bind:imageGenerationEnabled
 									bind:codeInterpreterEnabled
 									bind:webSearchEnabled
+									bind:ragEnabled
 									bind:atSelectedModel
 									bind:showCommands
 									toolServers={$toolServers}
@@ -2636,6 +2658,7 @@
 					{stopResponse}
 					{showMessage}
 					{eventTarget}
+					bind:ragEnabled
 				/>
 			</PaneGroup>
 		</div>
