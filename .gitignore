@@ -310,3 +310,9 @@ dist
 cypress/videos
 cypress/screenshots
 .vscode/settings.json
+
+# Ingestion & Observability
+openwebui_data/
+*.log
+tmp_indexation.log
+

@@ -13,6 +13,7 @@
 	export let models = [];
 	export let chatFiles = [];
 	export let params = {};
+export let ragEnabled = true;
 
 	let showValves = false;
 </script>
@@ -63,6 +64,23 @@
 
 				<hr class="my-2 border-gray-50 dark:border-gray-700/10" />
 			{/if}
+
+			<div class="flex items-start justify-between gap-3 py-2">
+				<div>
+					<div class="font-medium">Mode RAG · {ragEnabled ? 'activé' : 'désactivé'}</div>
+					<p class="text-xs text-gray-500 dark:text-gray-400">
+						Active ou désactive la recherche documentaire pour cette conversation.
+					</p>
+				</div>
+				<label class="inline-flex items-center cursor-pointer select-none">
+					<span class="sr-only">Basculer le mode RAG</span>
+					<input type="checkbox" class="sr-only peer" bind:checked={ragEnabled} />
+					<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 dark:peer-focus:ring-indigo-400 rounded-full peer dark:bg-gray-700 peer-checked:bg-indigo-600 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 relative"></div>
+				</label>
+			</div>
+
+			<hr class="my-2 border-gray-50 dark:border-gray-700/10" />
+
 
 			{#if $user?.role === 'admin' || ($user?.permissions.chat?.valves ?? true)}
 				<Collapsible bind:open={showValves} title={$i18n.t('Valves')} buttonClassName="w-full">

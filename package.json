@@ -3,7 +3,7 @@
 	"version": "0.8.4",
 	"private": true,
 	"scripts": {
-		"dev": "npm run pyodide:fetch && vite dev --host",
+		"dev": "npm run pyodide:fetch && vite dev --host --port 5120",
 		"dev:5050": "npm run pyodide:fetch && vite dev --port 5050",
 		"build": "npm run pyodide:fetch && vite build",
 		"build:watch": "npm run pyodide:fetch && vite build --watch",
@@ -148,7 +148,7 @@
 		"yjs": "^13.6.27"
 	},
 	"engines": {
-		"node": ">=18.13.0 <=22.x.x",
+		"node": ">=18.13.0",
 		"npm": ">=6.0.0"
 	}
 }

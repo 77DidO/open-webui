@@ -26,6 +26,7 @@
 
 	export let chatFiles = [];
 	export let params = {};
+	export let ragEnabled = true;
 
 	export let eventTarget: EventTarget;
 	export let submitPrompt: Function;
@@ -35,12 +36,10 @@
 	export let modelId;
 
 	export let pane;
-
-	let mediaQuery;
-	let largeScreen = false;
-	let dragged = false;
-
 	let minSize = 0;
+	let largeScreen = false;
+	let mediaQuery;
+	let dragged = false;
 
 	export const openPane = () => {
 		if (parseInt(localStorage?.chatControlsSize)) {
@@ -205,6 +204,7 @@
 						{models}
 						bind:chatFiles
 						bind:params
+						bind:ragEnabled
 					/>
 				{/if}
 			</div>
@@ -301,6 +301,7 @@
 							{models}
 							bind:chatFiles
 							bind:params
+							bind:ragEnabled
 						/>
 					{/if}
 				</div>
