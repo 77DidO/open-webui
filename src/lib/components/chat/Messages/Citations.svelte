@@ -193,12 +193,7 @@
 			<div class="space-y-1.5">
 				{#each citations as citation, idx}
 					{@const fullPath = citation.source.name || 'N/A'}
-					{@const rawName =
-						fullPath
-							?.split('/')
-							.pop()
-							?.split('\\')
-							.pop() || fullPath}
+					{@const rawName = fullPath?.split('/').pop()?.split('\\').pop() || fullPath}
 					{@const nameParts = rawName.split('.')}
 					{@const ext = nameParts.length > 1 ? '.' + nameParts.pop() : ''}
 					{@const base = nameParts.join('.')}
@@ -262,7 +257,7 @@
 						+{citations.length - 3}
 					</span>
 				{/if}
-				{/if}
 			</div>
+		{/if}
 	</div>
 {/if}
