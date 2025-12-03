@@ -262,6 +262,7 @@
 						+{citations.length - 3}
 					</span>
 				{/if}
+				{/if}
 			</div>
 	</div>
 {/if}
