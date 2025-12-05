@@ -18,7 +18,7 @@
 
 	let citationModal = null;
 
-	let showCitations = false;
+	let showCitations = true;
 	let showCitationModal = false;
 
 	let selectedCitation: any = null;
@@ -190,7 +190,7 @@
 		</button>
 
 		{#if showCitations}
-			<div class="space-y-1.5">
+			<div class="space-y-1.5 border-l-4 border-[#FFD300] pl-2">
 				{#each citations as citation, idx}
 					{@const fullPath = citation.source.name || 'N/A'}
 					{@const rawName = fullPath?.split('/').pop()?.split('\\').pop() || fullPath}
@@ -225,13 +225,47 @@
 						</span>
 						<div class="flex-1 min-w-0">
 							<div
-								class="text-[11px] font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"
+								class="text-[11px] font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition"
 							>
-								{decodeString(fileName)}{pageInfo}
+								{decodeString(fileName)}
 							</div>
+
+							{#if citation.metadata?.[0]}
+								<div class="flex flex-wrap gap-1 mt-0.5">
+									{#if citation.metadata[0].page}
+										<span
+											class="text-[9px] px-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+										>
+											p. {citation.metadata[0].page}
+										</span>
+									{/if}
+									{#if citation.metadata[0].doc_hint}
+										<span
+											class="text-[9px] px-1 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 uppercase"
+										>
+											{citation.metadata[0].doc_hint}
+										</span>
+									{/if}
+									{#if citation.metadata[0].project_names}
+										<span
+											class="text-[9px] px-1 rounded bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 truncate max-w-[150px]"
+										>
+											{citation.metadata[0].project_names}
+										</span>
+									{/if}
+									{#if citation.metadata[0].company_names}
+										<span
+											class="text-[9px] px-1 rounded bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 truncate max-w-[150px]"
+										>
+											{citation.metadata[0].company_names}
+										</span>
+									{/if}
+								</div>
+							{/if}
+
 							{#if citation.document?.[0]}
-								<div class="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">
-									{citation.document[0].substring(0, 100)}...
+								<div class="text-[10px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5">
+									"{citation.document[0].substring(0, 150)}..."
 								</div>
 							{/if}
 						</div>
@@ -245,7 +279,7 @@
 					{@const fileName =
 						citation.source.name?.split('/').pop()?.split('\\').pop() || citation.source.name}
 					<span
-						class="text-[11px] text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full"
+						class="text-[11px] text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded-full"
 					>
 						{decodeString(fileName).substring(0, 30)}{decodeString(fileName).length > 30
 							? '...'

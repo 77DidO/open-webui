@@ -41,7 +41,7 @@
 {#if title !== 'N/A'}
 	<button
 		aria-label={$i18n.t('View source: {{title}}', { title: formattedTitle(decodeString(title)) })}
-		class="text-[10px] w-fit translate-y-[2px] px-2 py-0.5 dark:bg-white/5 dark:text-white/80 dark:hover:text-white bg-gray-50 text-black/80 hover:text-black transition rounded-xl"
+		class="text-[10px] w-fit translate-y-[2px] px-2 py-0.5 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:text-yellow-100 bg-yellow-50 text-yellow-800 hover:text-yellow-900 transition rounded-xl"
 		on:click={() => {
 			onClick(id);
 		}}
