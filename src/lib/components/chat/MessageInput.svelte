@@ -1514,7 +1514,7 @@
 												on:click|preventDefault={() => (ragEnabled = !ragEnabled)}
 												type="button"
 												class="group px-2 py-[7px] mx-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {ragEnabled
-													? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-400/10 dark:hover:bg-emerald-600/10 border border-emerald-200/40 dark:border-emerald-500/20'
+													? 'text-yellow-700 dark:text-[#FFD300] bg-yellow-50 hover:bg-yellow-100 dark:bg-[#FFD300]/10 dark:hover:bg-[#FFD300]/20 border border-yellow-200/40 dark:border-[#FFD300]/20'
 													: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
 											>
 												<svg
