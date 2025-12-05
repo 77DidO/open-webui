@@ -219,7 +219,7 @@
 						}}
 					>
 						<span
-							class="flex-shrink-0 text-[9px] font-mono font-semibold text-gray-500 dark:text-gray-400 bg-gray-200/50 dark:bg-gray-700/50 px-1.5 py-0.5 rounded min-w-[18px] text-center"
+							class="flex-shrink-0 text-[9px] font-mono font-semibold text-yellow-800 dark:text-yellow-200 bg-yellow-100 dark:bg-yellow-900/20 px-1.5 py-0.5 rounded min-w-[18px] text-center"
 						>
 							{idx + 1}
 						</span>
