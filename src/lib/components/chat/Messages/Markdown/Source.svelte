@@ -35,13 +35,16 @@
 	}
 </script>
 
-<button
-	class="text-[10px] w-fit translate-y-[2px] px-2 py-0.5 dark:bg-gray-800 dark:text-[#FFD300] bg-yellow-50 text-[#FFD300] transition rounded-xl font-bold"
-	on:click={() => {
-		onClick(id);
-	}}
->
-	<span class="line-clamp-1">
-		{getDisplayTitle(formattedTitle(decodeString(title)))}
-	</span>
-</button>
+{#if title !== 'N/A'}
+	<button
+		class="text-[11px] w-fit translate-y-[2px] px-2 py-0.5 rounded-full transition
+        bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
+		on:click={() => {
+			onClick(id);
+		}}
+	>
+		<span class="line-clamp-1">
+			{getDisplayTitle(formattedTitle(decodeString(title)))}
+		</span>
+	</button>
+{/if}

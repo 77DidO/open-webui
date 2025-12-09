@@ -86,8 +86,8 @@ async def send_get_request(url, key=None, user: UserModel = None):
             ) as response:
                 return await response.json()
     except Exception as e:
-        # Handle connection error here
-        log.error(f"Connection error: {e}")
+        # Handle connection error here (keep full detail for troubleshooting)
+        log.exception(f"Connection error while GET {url}: {type(e).__name__}: {e}")
         return None
 
 
