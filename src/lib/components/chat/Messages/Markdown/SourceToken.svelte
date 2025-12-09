@@ -48,16 +48,15 @@
 		<LinkPreview.Root openDelay={0} bind:open={openPreview}>
 			<LinkPreview.Trigger>
 				<button
-					class="text-[10px] w-fit translate-y-[2px] px-2 py-0.5 dark:bg-gray-800 dark:text-[#FFD300] bg-yellow-50 text-[#FFD300] transition rounded-xl font-bold"
+					class="text-[11px] w-fit translate-y-[2px] px-2 py-0.5 rounded-full transition
+        bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
 					on:click={() => {
 						openPreview = !openPreview;
 					}}
 				>
 					<span class="line-clamp-1">
 						{getDisplayTitle(formattedTitle(decodeString(sourceIds[token.ids[0] - 1])))}
-						<span class="dark:text-[#FFD300]/80 text-[#FFD300]/80"
-							>+{(token?.ids ?? []).length - 1}</span
-						>
+						<span class="dark:text-white/50 text-black/50">+{(token?.ids ?? []).length - 1}</span>
 					</span>
 				</button>
 			</LinkPreview.Trigger>
