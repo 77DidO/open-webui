@@ -18,7 +18,7 @@
 
 	let citationModal = null;
 
-	let showCitations = true;
+let showCitations = true;
 	let showCitationModal = false;
 
 	let selectedCitation: any = null;
@@ -295,3 +295,6 @@
 		{/if}
 	</div>
 {/if}
+
+
+
