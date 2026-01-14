@@ -19,7 +19,11 @@ def apply_system_prompt_to_body(
     replace: bool = False,
 ) -> dict:
     if not system:
-        return form_data
+        system = "Tu es un assistant utile. Réponds toujours en français."
+    else:
+        # Enforce French language if not explicitly stated
+        if "français" not in system.lower() and "french" not in system.lower():
+            system += "\n\nIMPORTANT: Réponds TOUJOURS en français, sauf si l'utilisateur demande explicitement une autre langue."
 
     # Metadata (WebUI Usage)
     if metadata:
