@@ -26,6 +26,8 @@ export default {
 			typography: {
 				DEFAULT: {
 					css: {
+						'--tw-prose-headings': '#ca8a04',
+						'--tw-prose-invert-headings': '#facc15',
 						pre: false,
 						code: false,
 						'pre code': false,
