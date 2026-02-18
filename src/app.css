@@ -114,15 +114,15 @@ textarea::placeholder {
 	@apply text-xs prose dark:prose-invert prose-blockquote:border-s-gray-100 prose-blockquote:dark:border-gray-800 prose-blockquote:border-s-2 prose-blockquote:not-italic prose-blockquote:font-normal  prose-headings:font-semibold prose-hr:my-0.5  prose-hr:border-gray-50 prose-hr:dark:border-gray-850 prose-p:my-0 prose-img:my-1 prose-headings:my-1 prose-pre:my-0 prose-table:my-0 prose-blockquote:my-0 prose-ul:-my-0 prose-ol:-my-0 prose-li:-my-0 whitespace-pre-line;
 }
 
-/* Titres jaunes — fallback CSS direct (Tailwind v4 prose-invert variable bug) */
-.markdown-prose :is(h1, h2, h3, h4, h5, h6),
-.markdown-prose-sm :is(h1, h2, h3, h4, h5, h6),
-.markdown-prose-xs :is(h1, h2, h3, h4, h5, h6) {
+/* Titres jaunes — headings + bold (le LLM utilise tantôt ### tantôt **bold**) */
+.markdown-prose :is(h1, h2, h3, h4, h5, h6, strong),
+.markdown-prose-sm :is(h1, h2, h3, h4, h5, h6, strong),
+.markdown-prose-xs :is(h1, h2, h3, h4, h5, h6, strong) {
 	color: #ca8a04 !important;
 }
-:is(.dark) .markdown-prose :is(h1, h2, h3, h4, h5, h6),
-:is(.dark) .markdown-prose-sm :is(h1, h2, h3, h4, h5, h6),
-:is(.dark) .markdown-prose-xs :is(h1, h2, h3, h4, h5, h6) {
+:is(.dark) .markdown-prose :is(h1, h2, h3, h4, h5, h6, strong),
+:is(.dark) .markdown-prose-sm :is(h1, h2, h3, h4, h5, h6, strong),
+:is(.dark) .markdown-prose-xs :is(h1, h2, h3, h4, h5, h6, strong) {
 	color: #facc15 !important;
 }
 
