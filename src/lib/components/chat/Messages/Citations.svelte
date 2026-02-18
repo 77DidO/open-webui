@@ -194,10 +194,10 @@ let showCitations = true;
 				{#each citations as citation, idx}
 					{@const fullPath = citation.source.name || 'N/A'}
 					{@const rawName = fullPath?.split('/').pop()?.split('\\').pop() || fullPath}
-					{@const nameParts = rawName.split('.')}
-					{@const ext = nameParts.length > 1 ? '.' + nameParts.pop() : ''}
-					{@const base = nameParts.join('.')}
-					{@const shortBase = base.split(' - ').slice(-1)[0]}
+					{@const lastDot = rawName.lastIndexOf('.')}
+					{@const ext = lastDot > 0 ? rawName.substring(lastDot) : ''}
+					{@const base = lastDot > 0 ? rawName.substring(0, lastDot) : rawName}
+					{@const shortBase = base.replace(/^\d+\s*-\s*/, '')}
 					{@const fileName = shortBase + ext}
 					{@const pageInfo = citation.metadata?.[0]?.page
 						? ` - p.${citation.metadata[0].page}`
