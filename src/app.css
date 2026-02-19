@@ -41,6 +41,13 @@ html {
 	font-size: calc(1rem * var(--app-text-scale, 1));
 }
 
+/* Force smaller text in chat messages (not overridden by JS slider) */
+.markdown-prose,
+.markdown-prose-sm,
+.markdown-prose-xs {
+	font-size: 0.875rem !important;
+}
+
 #sidebar-chat-item {
 	/* sidebar item sizing scales for the chat list entries */
 	min-height: calc(32px * var(--app-text-scale, 1));
