@@ -2671,6 +2671,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									toolServers={$toolServers}
 									{generating}
 									{stopResponse}
@@ -2741,6 +2742,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									toolServers={$toolServers}
 									{stopResponse}
 									{createMessagePair}
