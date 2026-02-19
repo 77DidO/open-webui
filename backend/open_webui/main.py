@@ -1741,6 +1741,11 @@ async def chat_completion(
             },
         }
 
+        # RAGWiame: Read X-Use-RAG header from frontend and inject into metadata
+        x_use_rag = request.headers.get("x-use-rag")
+        if x_use_rag is not None:
+            metadata["use_rag"] = x_use_rag.lower() == "true"
+
         if metadata.get("chat_id") and user:
             if not metadata["chat_id"].startswith(
                 "local:"
