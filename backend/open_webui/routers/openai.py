@@ -145,6 +145,10 @@ async def get_headers_and_cookies(
         if metadata and metadata.get("chat_id"):
             headers[FORWARD_SESSION_INFO_HEADER_CHAT_ID] = metadata.get("chat_id")
 
+    # RAGWiame: Forward use_rag toggle to gateway via header
+    if metadata and "use_rag" in metadata:
+        headers["x-use-rag"] = str(metadata["use_rag"]).lower()
+
     token = None
     auth_type = config.get("auth_type")
 
