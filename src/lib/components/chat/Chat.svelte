@@ -169,6 +169,7 @@
 	let chatFiles = [];
 	let files = [];
 	let params = {};
+	let ragEnabled = true;
 
 	// Message queue for storing messages while generating
 	let messageQueue: { id: string; prompt: string; files: any[] }[] = [];
@@ -2211,6 +2212,7 @@
 				},
 				model_item: $models.find((m) => m.id === model.id),
 
+				metadata: { use_rag: ragEnabled },
 				session_id: $socket?.id,
 				chat_id: $chatId,
 
@@ -2809,6 +2811,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									bind:dragged
 									toolServers={$toolServers}
 									{generating}
@@ -2880,6 +2883,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									bind:dragged
 									toolServers={$toolServers}
 									{stopResponse}
@@ -2911,6 +2915,7 @@
 					bind:params
 					bind:files
 					bind:pane={controlPane}
+					bind:ragEnabled
 					chatId={$chatId}
 					modelId={selectedModelIds?.at(0) ?? null}
 					models={selectedModelIds.reduce((a, e, i, arr) => {
