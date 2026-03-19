@@ -44,6 +44,7 @@
 
 	export let chatFiles = [];
 	export let params = {};
+	export let ragEnabled = true;
 
 	export let eventTarget: EventTarget;
 	export let submitPrompt: Function;
@@ -366,7 +367,7 @@
 							{:else if activeTab === 'files' && codeInterpreterEnabled}
 								<PyodideFileNav />
 							{:else}
-								<Controls embed={true} {models} bind:chatFiles bind:params />
+								<Controls embed={true} {models} bind:chatFiles bind:params bind:ragEnabled />
 							{/if}
 						</div>
 					</div>
@@ -517,7 +518,7 @@
 								{:else if activeTab === 'files' && codeInterpreterEnabled}
 									<PyodideFileNav overlay={dragged} />
 								{:else}
-									<Controls embed={true} {models} bind:chatFiles bind:params />
+									<Controls embed={true} {models} bind:chatFiles bind:params bind:ragEnabled />
 								{/if}
 							</div>
 						</div>

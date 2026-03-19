@@ -2339,9 +2339,13 @@ async def process_chat_payload(request, form_data, user, metadata, model):
                 form_data = await chat_memory_handler(request, form_data, extra_params, user)
 
         if 'web_search' in features and features['web_search']:
-            # Skip forced RAG web search when native FC is enabled - model can use web_search tool
-            if metadata.get('params', {}).get('function_calling') != 'native':
-                form_data = await chat_web_search_handler(request, form_data, extra_params, user)
+            # Custom RAGWiame: Support use_rag flag + Upstream native FC check
+            if metadata.get('use_rag', True):
+                # Skip forced RAG web search when native FC is enabled - model can use web_search tool
+                if metadata.get('params', {}).get('function_calling') != 'native':
+                    form_data = await chat_web_search_handler(request, form_data, extra_params, user)
+            else:
+                log.info('Bypassing web search due to metadata.use_rag: false')
 
         if 'image_generation' in features and features['image_generation']:
             # Skip forced image generation when native FC is enabled - model can use generate_image tool
@@ -2696,8 +2700,15 @@ async def process_chat_payload(request, form_data, user, metadata, model):
 
     if file_context_enabled:
         try:
-            form_data, flags = await chat_completion_files_handler(request, form_data, extra_params, user)
-            sources.extend(flags.get('sources', []))
+            # RAGWiame: Support use_rag toggle from frontend
+            use_rag_val = metadata.get('use_rag', True)
+            should_use_rag = str(use_rag_val).lower() != 'false' if isinstance(use_rag_val, (str, bool)) else True
+
+            if should_use_rag or (metadata.get('files') and len(metadata.get('files', [])) > 0):
+                form_data, flags = await chat_completion_files_handler(request, form_data, extra_params, user)
+                sources.extend(flags.get('sources', []))
+            else:
+                log.info('Bypassing RAG (files) due to metadata.use_rag: false AND no files attached')
         except Exception as e:
             log.exception(e)
 

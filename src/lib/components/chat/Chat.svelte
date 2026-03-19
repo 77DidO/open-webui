@@ -171,6 +171,7 @@
 	let chatFiles = [];
 	let files = [];
 	let params = {};
+	let ragEnabled = true;
 
 	$: if (chatIdProp) {
 		navigateHandler();
@@ -2260,6 +2261,7 @@
 				},
 				model_item: $models.find((m) => m.id === model.id),
 
+				metadata: { use_rag: ragEnabled },
 				session_id: $socket?.id,
 				chat_id: $chatId,
 				folder_id: $selectedFolder?.id ?? undefined,
@@ -2856,6 +2858,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									bind:dragged
 									toolServers={$toolServers}
 									{generating}
@@ -2939,6 +2942,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									bind:dragged
 									{pendingOAuthTools}
 									toolServers={$toolServers}
@@ -2971,6 +2975,7 @@
 					bind:params
 					bind:files
 					bind:pane={controlPane}
+					bind:ragEnabled
 					chatId={$chatId}
 					modelId={selectedModelIds?.at(0) ?? null}
 					models={selectedModelIds.reduce((a, e, i, arr) => {

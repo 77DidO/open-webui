@@ -101,8 +101,8 @@ async def send_get_request(
             ) as response:
                 return await response.json()
     except Exception as e:
-        # Handle connection error here
-        log.error(f'Connection error: {e}')
+        # Handle connection error here (keep full detail for troubleshooting)
+        log.exception(f'Connection error while GET {url}: {type(e).__name__}: {e}')
         return None
 
 
@@ -164,6 +164,10 @@ async def get_headers_and_cookies(
         headers = include_user_info_headers(headers, user)
         if metadata and metadata.get('chat_id'):
             headers[FORWARD_SESSION_INFO_HEADER_CHAT_ID] = metadata.get('chat_id')
+
+    # RAGWiame: Forward use_rag toggle to gateway via header
+    if metadata and "use_rag" in metadata:
+        headers["x-use-rag"] = str(metadata["use_rag"]).lower()
 
     token = None
     auth_type = config.get('auth_type')

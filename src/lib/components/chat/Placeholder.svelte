@@ -54,6 +54,7 @@
 	export let imageGenerationEnabled = false;
 	export let codeInterpreterEnabled = false;
 	export let webSearchEnabled = false;
+	export let ragEnabled = true;
 
 	export let onUpload: Function = (e) => {};
 	export let onSelect = (e) => {};
@@ -154,7 +155,7 @@
 								</span>
 							</Tooltip>
 						{:else}
-							{$i18n.t('Hello, {{name}}', { name: $user?.name })}
+							{$i18n.t('Hello, {{name}}', { name: $user?.name?.split(' ')[0] })}
 						{/if}
 					</div>
 				</div>
@@ -216,6 +217,7 @@
 					bind:imageGenerationEnabled
 					bind:codeInterpreterEnabled
 					bind:webSearchEnabled
+					bind:ragEnabled
 					bind:atSelectedModel
 					bind:showCommands
 					bind:dragged
