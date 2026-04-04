@@ -2749,9 +2749,13 @@ async def process_chat_payload(request, form_data, user, metadata, model):
             should_use_rag = str(use_rag_val).lower() != "false" if isinstance(use_rag_val, (str, bool)) else True
             log.info(f"DEBUG: RAG Decision - Raw: {use_rag_val}, Computed: {should_use_rag}")
 
-            if should_use_rag or (metadata.get("files") and len(metadata.get("files", [])) > 0):
+            files = metadata.get("files") or []
+
+            if should_use_rag or (len(files) > 0):
                 # Ensure we process if RAG is requested OR if files are attached (Direct Upload)
-                log.info(f"DEBUG: Triggering File/RAG Handler. use_rag={should_use_rag}, files={len(metadata.get('files', []))}")
+                log.info(
+                    f"DEBUG: Triggering File/RAG Handler. use_rag={should_use_rag}, files={len(files)}"
+                )
                 form_data, flags = await chat_completion_files_handler(
                     request, form_data, extra_params, user
                 )
