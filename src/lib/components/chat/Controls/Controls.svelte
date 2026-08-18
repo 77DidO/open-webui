@@ -8,11 +8,13 @@
 	import Valves from '$lib/components/chat/Controls/Valves.svelte';
 	import FileItem from '$lib/components/common/FileItem.svelte';
 	import Collapsible from '$lib/components/common/Collapsible.svelte';
+	import Switch from '$lib/components/common/Switch.svelte';
 
 	import { user, settings } from '$lib/stores';
 	export let models = [];
 	export let chatFiles = [];
 	export let params = {};
+	export let ragEnabled = true;
 	export let embed = false;
 
 	// Persist collapsible section open/close state
@@ -90,6 +92,16 @@
 					</div>
 				</Collapsible>
 			{/if}
+
+			<div class="flex items-start justify-between gap-3 py-1 px-0.5">
+				<div>
+					<div class="text-xs font-medium">Mode RAG · {ragEnabled ? 'activé' : 'désactivé'}</div>
+					<p class="text-xs text-gray-500 dark:text-gray-400">
+						Active ou désactive la recherche documentaire pour cette conversation.
+					</p>
+				</div>
+				<Switch ariaLabel="Basculer le mode RAG" bind:state={ragEnabled} />
+			</div>
 
 			{#if $user?.role === 'admin' || ($user?.permissions.chat?.valves ?? true)}
 				<Collapsible

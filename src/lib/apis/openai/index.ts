@@ -204,12 +204,17 @@ export const chatCompletion = async (
 	const controller = new AbortController();
 	let error = null;
 
+	// Extract use_rag from metadata if present
+	// @ts-ignore
+	const useRag = body?.metadata?.use_rag ?? null;
+
 	const res = await fetch(`${url}/chat/completions`, {
 		signal: controller.signal,
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${token}`,
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {})
 		},
 		body: JSON.stringify(body)
 	}).catch((err) => {
@@ -232,11 +237,15 @@ export const generateOpenAIChatCompletion = async (
 ) => {
 	let error = null;
 
+	// @ts-ignore
+	const useRag = body?.metadata?.use_rag ?? null;
+
 	const res = await fetch(`${url}/chat/completions`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${token}`,
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {})
 		},
 		credentials: 'include',
 		body: JSON.stringify(body)

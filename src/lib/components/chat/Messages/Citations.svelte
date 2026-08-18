@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { embed, showControls, showEmbeds } from '$lib/stores';
+
 
 	import CitationModal from './Citations/CitationModal.svelte';
 
@@ -18,7 +18,7 @@
 
 	let citationModal = null;
 
-	let showCitations = false;
+let showCitations = true;
 	let showCitationModal = false;
 
 	let selectedCitation: any = null;
@@ -44,22 +44,9 @@
 			if (citations[index]?.source?.embed_url) {
 				const embedUrl = citations[index].source.embed_url;
 				if (embedUrl) {
-					if (readOnly) {
-						// Open in new tab if readOnly
-						window.open(embedUrl, '_blank');
-						return;
-					} else {
-						showControls.set(true);
-						showEmbeds.set(true);
-						embed.set({
-							url: embedUrl,
-							title: citations[index]?.source?.name || 'Embedded Content',
-							source: citations[index],
-							chatId: chatId,
-							messageId: id,
-							sourceId: sourceId
-						});
-					}
+					// Always open in new tab (embed sidebar fails for gateway PDF URLs)
+					window.open(embedUrl, '_blank');
+					return;
 				} else {
 					selectedCitation = citations[index];
 					showCitationModal = true;
@@ -203,34 +190,106 @@
 				{/if}
 			</div>
 		</button>
-	</div>
-{/if}
 
-{#if showCitations}
-	<div class="py-1.5">
-		<div class="text-xs gap-2 flex flex-col">
-			{#each citations as citation, idx}
-				<button
-					id={`source-${id}-${idx + 1}`}
-					aria-label={$i18n.t('View source: {{name}}', {
-						name: decodeString(citation.source.name)
-					})}
-					class="no-toggle outline-hidden flex dark:text-gray-300 bg-transparent text-gray-600 rounded-xl gap-1.5 items-center"
-					on:click={() => {
-						showCitationModal = true;
-						selectedCitation = citation;
-					}}
-				>
-					<div class=" font-normal bg-gray-50 dark:bg-gray-850 rounded-md px-1">
-						{idx + 1}
-					</div>
-					<div
-						class="flex-1 truncate hover:text-black dark:text-white/60 dark:hover:text-white transition text-left"
+		{#if showCitations}
+			<div class="space-y-1.5 border-l-4 border-[#FFD300] pl-2">
+				{#each citations as citation, idx}
+					{@const fullPath = citation.source.name || 'N/A'}
+					{@const rawName = fullPath?.split('/').pop()?.split('\\').pop() || fullPath}
+					{@const lastDot = rawName.lastIndexOf('.')}
+					{@const ext = lastDot > 0 ? rawName.substring(lastDot) : ''}
+					{@const base = lastDot > 0 ? rawName.substring(0, lastDot) : rawName}
+					{@const shortBase = base.replace(/^\d+\s*-\s*/, '')}
+					{@const fileName = shortBase + ext}
+					{@const page = citation.metadata?.[0]?.page}
+					{@const projectName = fullPath?.split('/')[0]?.split('-').slice(0, 2).join('-') || ''}
+					{@const tooltipText = `${fileName}${page ? ' • Page ' + page : ''}\n${projectName}`}
+					<button
+						id={`source-${id}-${idx + 1}`}
+						class="w-full text-left group flex items-start gap-2 p-1.5 rounded hover:bg-gray-100/50 dark:hover:bg-gray-800/30 transition"
+						title={tooltipText}
+						on:click={() => {
+							if (citation?.source?.embed_url) {
+								window.open(citation.source.embed_url, '_blank');
+							} else {
+								showCitationModal = true;
+								selectedCitation = citation;
+							}
+						}}
 					>
-						{decodeString(citation.source.name)}
-					</div>
-				</button>
-			{/each}
-		</div>
+						<span
+							class="flex-shrink-0 text-[9px] font-mono font-semibold text-yellow-800 dark:text-yellow-200 bg-yellow-100 dark:bg-yellow-900/20 px-1.5 py-0.5 rounded min-w-[18px] text-center"
+						>
+							{idx + 1}
+						</span>
+						<div class="flex-1 min-w-0">
+							<div
+								class="text-[11px] font-medium text-gray-700 dark:text-gray-200 truncate group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition"
+							>
+								{decodeString(fileName)}
+							</div>
+
+							{#if citation.metadata?.[0]}
+								<div class="flex flex-wrap gap-1 mt-0.5">
+									{#if page}
+										<span
+											class="text-[9px] px-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+										>
+											p. {page}
+										</span>
+									{/if}
+									{#if citation.metadata[0].doc_hint}
+										<span
+											class="text-[9px] px-1 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 uppercase"
+										>
+											{citation.metadata[0].doc_hint}
+										</span>
+									{/if}
+									{#if citation.metadata[0].project_names}
+										<span
+											class="text-[9px] px-1 rounded bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 truncate max-w-[150px]"
+										>
+											{citation.metadata[0].project_names}
+										</span>
+									{/if}
+									{#if citation.metadata[0].company_names}
+										<span
+											class="text-[9px] px-1 rounded bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 truncate max-w-[150px]"
+										>
+											{citation.metadata[0].company_names}
+										</span>
+									{/if}
+								</div>
+							{/if}
+
+							{#if citation.document?.[0]}
+								<div class="text-[10px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5">
+									"{citation.document[0].substring(0, 150)}..."
+								</div>
+							{/if}
+						</div>
+					</button>
+				{/each}
+			</div>
+		{:else}
+			<!-- Collapsed preview -->
+			<div class="flex gap-1.5 flex-wrap">
+				{#each citations.slice(0, 3) as citation, idx}
+					{@const fileName =
+						citation.source.name?.split('/').pop()?.split('\\').pop() || citation.source.name}
+					{@const decoded = decodeString(fileName)}
+					<span
+						class="text-[11px] text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded-full"
+					>
+						{decoded.substring(0, 30)}{decoded.length > 30 ? '...' : ''}
+					</span>
+				{/each}
+				{#if citations.length > 3}
+					<span class="text-[11px] text-gray-500 dark:text-gray-500 px-1">
+						+{citations.length - 3}
+					</span>
+				{/if}
+			</div>
+		{/if}
 	</div>
 {/if}

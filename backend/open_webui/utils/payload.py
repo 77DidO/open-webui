@@ -49,9 +49,13 @@ async def apply_system_prompt_to_body(
     user=None,
     replace: bool = False,
 ) -> dict:
-    system = await resolve_system_prompt(system, metadata, user)
-    if not system:
-        return form_data
+    system = await resolve_system_prompt(system, metadata, user) or 'Tu es un assistant utile.'
+    system_lower = system.lower()
+    if 'français' not in system_lower and 'french' not in system_lower:
+        system += (
+            '\n\nIMPORTANT: Réponds TOUJOURS en français, sauf si '
+            "l'utilisateur demande explicitement une autre langue."
+        )
 
     if replace:
         form_data['messages'] = replace_system_message_content(system, form_data.get('messages', []))

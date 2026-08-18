@@ -49,7 +49,8 @@
 			<LinkPreview.Trigger>
 				<button
 					aria-label={`${getDisplayTitle(formattedTitle(decodeString(sourceIds[token.ids[0] - 1])))} +${(token?.ids ?? []).length - 1} more sources`}
-					class="text-[10px] w-fit translate-y-[2px] px-2 py-0.5 dark:bg-white/5 dark:text-white/80 dark:hover:text-white bg-gray-50 text-black/80 hover:text-black transition rounded-xl"
+					class="text-[11px] w-fit translate-y-[2px] px-2 py-0.5 rounded-full transition
+		bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300"
 					on:click={() => {
 						openPreview = !openPreview;
 					}}
