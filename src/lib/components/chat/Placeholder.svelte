@@ -64,6 +64,7 @@
 	export let onToolApprovalModeChange: Function = () => {};
 	export let oauthRedirectHandler: Function = () => {};
 	export let ragEnabled = true;
+	export let gatewayWebEnabled = false;
 
 	export let onUpload: Function = (e) => {};
 	export let onUpdate: (data?: { file?: any }) => void = () => {};
@@ -255,6 +256,7 @@
 						bind:codeInterpreterEnabled
 						bind:webSearchEnabled
 						bind:ragEnabled
+						bind:gatewayWebEnabled
 						bind:atSelectedModel
 						bind:showCommands
 						bind:dragged

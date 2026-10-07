@@ -184,6 +184,9 @@ async def get_headers_and_cookies(
     # RAGWiame: Forward use_rag toggle to gateway via header
     if metadata and "use_rag" in metadata:
         headers["x-use-rag"] = str(metadata["use_rag"]).lower()
+    # RAGWiame: Forward use_web toggle (recherche web côté gateway)
+    if metadata and "use_web" in metadata:
+        headers["x-use-web"] = str(metadata["use_web"]).lower()
 
     token = None
     auth_type = config.get('auth_type')

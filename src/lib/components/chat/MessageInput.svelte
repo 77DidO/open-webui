@@ -202,6 +202,7 @@
 	export let toolApprovalMode = 'full';
 	export let onToolApprovalModeChange: Function = () => {};
 	export let ragEnabled = true;
+	export let gatewayWebEnabled = false;
 
 	export let pendingOAuthTools: {
 		id: string;
@@ -2317,6 +2318,37 @@
 												/>
 											</svg>
 											<span>RAG</span>
+										</button>
+									</Tooltip>
+
+									<Tooltip
+										content={gatewayWebEnabled
+											? 'Recherche web activée : la question sera envoyée à un moteur de recherche externe'
+											: 'Recherche web désactivée'}
+										placement="top"
+									>
+										<button
+											aria-label={gatewayWebEnabled ? 'Désactiver la recherche web' : 'Activer la recherche web'}
+											aria-pressed={gatewayWebEnabled}
+											on:click|preventDefault={() => (gatewayWebEnabled = !gatewayWebEnabled)}
+											type="button"
+											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {gatewayWebEnabled
+												? 'text-sky-700 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-300/10 dark:hover:bg-sky-300/20 border border-sky-200/40 dark:border-sky-300/20'
+												: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+												class="size-3.5"
+											>
+												<path
+													fill-rule="evenodd"
+													d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
+													clip-rule="evenodd"
+												/>
+											</svg>
+											<span>Web</span>
 										</button>
 									</Tooltip>
 

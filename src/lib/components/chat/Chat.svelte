@@ -425,6 +425,22 @@
 	let files: any[] = [];
 	let params = {};
 	let ragEnabled = false;
+	// Recherche web côté gateway (bouton « Web », header X-Use-Web) — distincte de la recherche web native d'Open WebUI
+	let gatewayWebEnabled = false;
+	// RAG et Web s'excluent : le dernier toggle activé l'emporte (une seule instruction réactive,
+	// deux blocs `$:` croisés provoqueraient une dépendance cyclique refusée par le compilateur)
+	let _prevRagEnabled = ragEnabled;
+	const enforceRagWebExclusivity = (rag: boolean, web: boolean) => {
+		if (rag && web) {
+			if (rag !== _prevRagEnabled) {
+				gatewayWebEnabled = false;
+			} else {
+				ragEnabled = false;
+			}
+		}
+		_prevRagEnabled = ragEnabled;
+	};
+	$: enforceRagWebExclusivity(ragEnabled, gatewayWebEnabled);
 	let chatVariables = {};
 	let showChatVariablesModal = false;
 	let loadedChatIdProp = '';
@@ -3610,7 +3626,7 @@
 				...(useChatVariablesFallback ? { chat_variables: chatVariables } : {}),
 				model_item: $models.find((m) => m.id === model.id),
 
-				metadata: { use_rag: ragEnabled },
+				metadata: { use_rag: ragEnabled, use_web: gatewayWebEnabled },
 				session_id: $socket?.id,
 				chat_id: _chatId || undefined,
 				folder_id: $selectedFolder?.id ?? undefined,
@@ -4457,6 +4473,7 @@
 										bind:atSelectedModel
 										bind:showCommands
 										bind:ragEnabled
+										bind:gatewayWebEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -4550,6 +4567,7 @@
 										bind:atSelectedModel
 										bind:showCommands
 										bind:ragEnabled
+										bind:gatewayWebEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -4610,6 +4628,7 @@
 									bind:atSelectedModel
 									bind:showCommands
 									bind:ragEnabled
+									bind:gatewayWebEnabled
 									bind:dragged
 									{toolApprovalMode}
 									onToolApprovalModeChange={handleToolApprovalModeChange}

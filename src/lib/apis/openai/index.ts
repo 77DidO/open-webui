@@ -400,6 +400,8 @@ export const chatCompletion = async (
 	// Extract use_rag from metadata if present
 	// @ts-ignore
 	const useRag = body?.metadata?.use_rag ?? null;
+	// @ts-ignore
+	const useWeb = body?.metadata?.use_web ?? null;
 
 	const res = await fetch(`${url}/chat/completions`, {
 		signal: controller.signal,
@@ -407,7 +409,8 @@ export const chatCompletion = async (
 		headers: {
 			Authorization: `Bearer ${token}`,
 			'Content-Type': 'application/json',
-			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {})
+			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {}),
+			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {})
 		},
 		body: JSON.stringify(body)
 	}).catch((err) => {
@@ -432,13 +435,16 @@ export const generateOpenAIChatCompletion = async (
 
 	// @ts-ignore
 	const useRag = body?.metadata?.use_rag ?? null;
+	// @ts-ignore
+	const useWeb = body?.metadata?.use_web ?? null;
 
 	const res = await fetch(`${url}/chat/completions`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${token}`,
 			'Content-Type': 'application/json',
-			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {})
+			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {}),
+			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {})
 		},
 		credentials: 'include',
 		body: JSON.stringify(body)

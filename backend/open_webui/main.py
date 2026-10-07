@@ -1301,6 +1301,11 @@ async def chat_completion(
         if x_use_rag is not None:
             metadata["use_rag"] = x_use_rag.lower() == "true"
 
+        # RAGWiame: Read X-Use-Web header (bouton « Web », recherche web côté gateway)
+        x_use_web = request.headers.get("x-use-web")
+        if x_use_web is not None:
+            metadata["use_web"] = x_use_web.lower() == "true"
+
         if is_new_chat:
             metadata['chat_id'] = str(uuid4())
 
