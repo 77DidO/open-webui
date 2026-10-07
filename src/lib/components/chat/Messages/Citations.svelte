@@ -50,6 +50,10 @@
 		if (citations[index]) {
 			console.log('Showing citation modal for:', citations[index]);
 
+			if (citations[index]?.metadata?.[0]?.web === true && openEmbedUrl(citations[index]?.source?.url)) {
+				return;
+			}
+
 			if (citations[index]?.source?.embed_url) {
 				// Always open in new tab (embed sidebar fails for gateway PDF URLs)
 				if (openEmbedUrl(citations[index].source.embed_url)) {
@@ -215,15 +219,23 @@
 					{@const ext = lastDot > 0 ? rawName.substring(lastDot) : ''}
 					{@const base = lastDot > 0 ? rawName.substring(0, lastDot) : rawName}
 					{@const shortBase = base.replace(/^\d+\s*-\s*/, '')}
-					{@const fileName = shortBase + ext}
+					{@const isWeb = citation.metadata?.[0]?.web === true}
+					{@const fileName = isWeb
+						? citation.metadata[0].title || citation.metadata[0].domain || fullPath
+						: shortBase + ext}
 					{@const page = citation.metadata?.[0]?.page}
 					{@const projectName = fullPath?.split('/')[0]?.split('-').slice(0, 2).join('-') || ''}
-					{@const tooltipText = `${fileName}${page ? ' • Page ' + page : ''}\n${projectName}`}
+					{@const tooltipText = isWeb
+						? `${fileName}\n${citation?.source?.url ?? ''}`
+						: `${fileName}${page ? ' • Page ' + page : ''}\n${projectName}`}
 					<button
 						id={`source-${id}-${idx + 1}`}
 						class="w-full text-left group flex items-start gap-2 p-1.5 rounded hover:bg-gray-100/50 dark:hover:bg-gray-800/30 transition"
 						title={tooltipText}
 						on:click={() => {
+							if (isWeb && openEmbedUrl(citation?.source?.url)) {
+								return;
+							}
 							if (!openEmbedUrl(citation?.source?.embed_url)) {
 								showCitationModal = true;
 								selectedCitation = citation;
@@ -249,6 +261,13 @@
 											class="text-[9px] px-1 rounded bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
 										>
 											p. {page}
+										</span>
+									{/if}
+									{#if isWeb}
+										<span
+											class="text-[9px] px-1 rounded bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200 truncate max-w-[200px]"
+										>
+											🌐 Web{citation.metadata[0].domain ? ' · ' + citation.metadata[0].domain : ''}
 										</span>
 									{/if}
 									{#if citation.metadata[0].doc_hint}
