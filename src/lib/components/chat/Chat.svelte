@@ -491,6 +491,7 @@
 	};
 
 	let params = {};
+	let ragEnabled = true;
 	let chatVariables = {};
 	let showChatVariablesModal = false;
 	let loadedChatIdProp = '';
@@ -4351,6 +4352,7 @@
 				...(useChatVariablesFallback ? { chat_variables: chatVariables } : {}),
 				model_item: $models.find((m) => m.id === model.id),
 
+				metadata: { use_rag: ragEnabled },
 				session_id: $socket?.id,
 				chat_id: _chatId || undefined,
 				folder_id: $selectedFolder?.id ?? undefined,
@@ -5274,6 +5276,7 @@
 										bind:webSearchEnabled
 										bind:atSelectedModel
 										bind:showCommands
+										bind:ragEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -5371,6 +5374,7 @@
 										bind:webSearchEnabled
 										bind:atSelectedModel
 										bind:showCommands
+										bind:ragEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -5433,6 +5437,7 @@
 									bind:webSearchEnabled
 									bind:atSelectedModel
 									bind:showCommands
+									bind:ragEnabled
 									bind:dragged
 									{toolApprovalMode}
 									onToolApprovalModeChange={handleToolApprovalModeChange}
@@ -5477,6 +5482,7 @@
 						bind:chatFiles
 						bind:params
 						bind:files
+						bind:ragEnabled
 						chatId={$chatId}
 						chatUser={chatOwner}
 						modelId={selectedModelIds?.at(0) ?? null}

@@ -54,6 +54,11 @@ export default defineConfig({
 				target: backendTarget,
 				changeOrigin: true
 			},
+			// RAGWiame: gateway RAG (dev)
+			'/v1': {
+				target: 'http://localhost:8090',
+				changeOrigin: true
+			},
 			'/ws': {
 				target: backendTarget,
 				changeOrigin: true,
