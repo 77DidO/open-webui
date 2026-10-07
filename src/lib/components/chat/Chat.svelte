@@ -424,7 +424,7 @@
 	let chatFiles = [];
 	let files: any[] = [];
 	let params = {};
-	let ragEnabled = true;
+	let ragEnabled = false;
 	let chatVariables = {};
 	let showChatVariablesModal = false;
 	let loadedChatIdProp = '';
