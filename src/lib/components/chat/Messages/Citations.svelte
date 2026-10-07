@@ -18,7 +18,8 @@
 
 	let citationModal = null;
 
-	let showCitations = true;
+	// Liste des sources repliée par défaut (clic sur « N Sources » pour la déplier)
+	let showCitations = false;
 	let showCitationModal = false;
 
 	let selectedCitation: any = null;
