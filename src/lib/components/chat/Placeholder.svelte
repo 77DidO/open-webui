@@ -63,6 +63,7 @@
 	export let toolApprovalMode = 'full';
 	export let onToolApprovalModeChange: Function = () => {};
 	export let oauthRedirectHandler: Function = () => {};
+	export let ragEnabled = true;
 
 	export let onUpload: Function = (e) => {};
 	export let onUpdate: (data?: { file?: any }) => void = () => {};
@@ -189,7 +190,7 @@
 								</span>
 							</Tooltip>
 						{:else}
-							{$i18n.t('Hello, {{name}}', { name: $user?.name })}
+							{$i18n.t('Hello, {{name}}', { name: $user?.name?.split(' ')[0] })}
 						{/if}
 					</div>
 				</div>
@@ -253,6 +254,7 @@
 						bind:imageGenerationEnabled
 						bind:codeInterpreterEnabled
 						bind:webSearchEnabled
+						bind:ragEnabled
 						bind:atSelectedModel
 						bind:showCommands
 						bind:dragged

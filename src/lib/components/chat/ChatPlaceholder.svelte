@@ -113,7 +113,7 @@
 					{#if selectedModelName}
 						{selectedModelName}
 					{:else}
-						{$i18n.t('Hello, {{name}}', { name: $user?.name })}
+						{$i18n.t('Hello, {{name}}', { name: $user?.name?.split(' ')[0] })}
 					{/if}
 				</div>
 
