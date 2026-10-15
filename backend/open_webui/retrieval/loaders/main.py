@@ -94,30 +94,61 @@ known_source_ext = [
     'svg',
 ]
 
-known_archive_ext = {'docx', 'epub', 'odt', 'pptx', 'xlsx'}
+known_archive_ext = {'docx', 'epub', 'odt', 'pptx', 'xlsx', 'xlsm'}
 known_archive_content_types = {
     'application/epub+zip',
     'application/vnd.oasis.opendocument.text',
     'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel.sheet.macroEnabled.12',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 }
 
 
 class ExcelLoader:
-    """Fallback Excel loader using pandas when unstructured is not installed."""
+    """Custom RAGWiame : classeurs xls/xlsx/xlsm lus avec python-calamine (openpyxl refuse certains styles, ex. biltinId).
+
+    Formatage copié de llm_pipeline/file_context.py (_format_value, _sheet_text) : garder les deux identiques.
+    """
 
     def __init__(self, file_path):
         self.file_path = file_path
 
-    def load(self) -> list[Document]:
-        import pandas as pd
+    @staticmethod
+    def _format_value(value) -> str:
+        import datetime as dt
+        import re
 
+        if isinstance(value, bool):
+            return 'oui' if value else 'non'
+        if isinstance(value, float):
+            return str(int(value)) if value.is_integer() else f'{value:.10g}'
+        if isinstance(value, dt.datetime):
+            return value.date().isoformat() if value.time() == dt.time(0) else value.isoformat(sep=' ')
+        if isinstance(value, dt.date):
+            return value.isoformat()
+        return re.sub(r'\s+', ' ', str(value)).strip()
+
+    @classmethod
+    def _sheet_text(cls, rows) -> str:
+        lines = []
+        for row in rows:
+            cells = [cls._format_value(v) if v not in ('', None) else '' for v in row]
+            while cells and not cells[-1]:
+                cells.pop()
+            if cells:
+                lines.append(' | '.join(cells))
+        return '\n'.join(lines)
+
+    def load(self) -> list[Document]:
+        from python_calamine import CalamineWorkbook
+
+        book = CalamineWorkbook.from_path(self.file_path)
         text_parts = []
-        xls = pd.ExcelFile(self.file_path)
-        for sheet_name in xls.sheet_names:
-            df = pd.read_excel(xls, sheet_name=sheet_name)
-            text_parts.append(f'Sheet: {sheet_name}\n{df.to_string(index=False)}')
+        for sheet_name in book.sheet_names:
+            text = self._sheet_text(book.get_sheet_by_name(sheet_name).to_python())
+            if text:
+                text_parts.append(f'Sheet: {sheet_name}\n{text}')
         return [
             Document(
                 page_content='\n\n'.join(text_parts),
@@ -791,16 +822,10 @@ class Loader:
             elif file_content_type in [
                 'application/vnd.ms-excel',
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            ] or file_ext in ['xls', 'xlsx']:
-                try:
-                    loader = UnstructuredLoader(file_path, 'xlsx')
-                except ImportError:
-                    log.warning(
-                        "The 'unstructured' package is not installed. "
-                        'Falling back to pandas for Excel file loading. '
-                        'Install unstructured for better results: pip install unstructured'
-                    )
-                    loader = ExcelLoader(file_path)
+                'application/vnd.ms-excel.sheet.macroEnabled.12',
+            ] or file_ext in ['xls', 'xlsx', 'xlsm']:
+                # Custom RAGWiame : calamine à la place d'unstructured/openpyxl (voir ExcelLoader).
+                loader = ExcelLoader(file_path)
             elif file_content_type in [
                 'application/vnd.ms-powerpoint',
                 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
