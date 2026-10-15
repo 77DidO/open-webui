@@ -85,6 +85,7 @@ dependencies = [
     "pypandoc==1.17",
     "pandas==3.0.3",
     "openpyxl==3.1.5",
+    "python-calamine==0.6.2",
     "pyxlsb==1.0.10",
     "xlrd==2.0.2",
     "validators==0.35.0",
