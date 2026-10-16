@@ -33,7 +33,8 @@ ARG UID
 ARG GID
 
 # Set Node.js options (heap limit Allocation failed - JavaScript heap out of memory)
-# ENV NODE_OPTIONS="--max-old-space-size=4096"
+# Custom RAGWiame : le build Vite de la 0.12.x dépasse le tas par défaut (~4 Go) sur srvia.
+ENV NODE_OPTIONS="--max-old-space-size=8192"
 
 WORKDIR /app
 
