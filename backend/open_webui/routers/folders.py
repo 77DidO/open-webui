@@ -33,6 +33,7 @@ from open_webui.utils.access_control import (
 )
 from open_webui.utils.access_control.files import can_read_all_folder_files, get_accessible_folder_files
 from open_webui.utils.auth import get_admin_user, get_verified_user
+from open_webui.utils import file_cleanup  # custom RAGWiame : fichiers des conversations supprimées
 from open_webui.tasks import has_active_tasks
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -745,6 +746,10 @@ async def delete_folder_by_id(
                 detail=ERROR_MESSAGES.ACCESS_PROHIBITED,
             )
 
+    cleanup_file_ids = (
+        await file_cleanup.chat_file_ids(user_id=folder_owner_id, folder_ids=folder_ids) if delete_contents else set()
+    )
+
     folders = []
     folders.append(folder)
     while folders:
@@ -771,6 +776,7 @@ async def delete_folder_by_id(
                     subject_id=id,
                     data={'folder_ids': folder_ids, 'delete_contents': delete_contents},
                 )
+                file_cleanup.cleanup_files_later(cleanup_file_ids)
                 return True
             except Exception as e:
                 log.exception(e)

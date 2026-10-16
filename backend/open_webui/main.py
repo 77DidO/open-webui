@@ -435,6 +435,11 @@ async def lifespan(app: FastAPI):
 
     app.state.scheduler_worker_loop = asyncio.create_task(scheduler_worker_loop(app))
 
+    # custom RAGWiame : ménage des fichiers orphelins (FILE_CLEANUP_MODE, sans effet par défaut)
+    from open_webui.utils.file_cleanup import periodic_file_cleanup
+
+    app.state.periodic_file_cleanup = asyncio.create_task(periodic_file_cleanup())
+
     if await Config.get('models.base_models_cache'):
         try:
             await get_all_models(
@@ -527,6 +532,7 @@ async def lifespan(app: FastAPI):
     app.state.periodic_usage_pool_cleanup.cancel()
     app.state.periodic_session_pool_cleanup.cancel()
     app.state.scheduler_worker_loop.cancel()
+    app.state.periodic_file_cleanup.cancel()
 
     await publish_event(app, EVENTS.SYSTEM_SHUTDOWN_COMPLETED, source='system')
 

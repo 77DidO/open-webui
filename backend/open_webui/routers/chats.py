@@ -44,6 +44,7 @@ from open_webui.utils.access_control.folders import has_folder_write_access
 from open_webui.utils.auth import bearer_security, get_admin_user, get_current_user, get_verified_user
 from open_webui.utils.chat_fork import build_fork_history
 from open_webui.utils.context_compaction import compact_chat_branch, get_chat_context_usage
+from open_webui.utils import file_cleanup  # custom RAGWiame : fichiers des conversations supprimées
 from open_webui.utils.json_codec import JSONCodec
 from open_webui.utils.misc import get_message_list
 from open_webui.utils.models import get_all_models
@@ -762,8 +763,10 @@ async def delete_all_user_chats(
         )
 
     tag_ids = [tag.id for tag in await Tags.get_tags_by_user_id(user.id, db=db)]
+    cleanup_file_ids = await file_cleanup.chat_file_ids(user_id=user.id)
     result = await Chats.delete_chats_by_user_id(user.id, db=db)
     if result:
+        file_cleanup.cleanup_files_later(cleanup_file_ids)
         await Chats.delete_orphan_tags_for_user(tag_ids, user.id, db=db)
         await publish_event(
             request,
@@ -1689,8 +1692,11 @@ async def delete_chat_by_id(
     await stop_item_tasks(request.app.state.redis, id)
     await Chats.delete_orphan_tags_for_user(chat.meta.get('tags', []), chat.user_id, threshold=1, db=db)
 
+    child_ids = await Chats.get_internal_chat_ids_by_parent_id(id, chat.user_id)
+    cleanup_file_ids = await file_cleanup.chat_file_ids(chat_ids=[id, *child_ids])
+
     # Cascade to internal child chats spawned from this one.
-    for child_id in await Chats.get_internal_chat_ids_by_parent_id(id, chat.user_id):
+    for child_id in child_ids:
         await stop_item_tasks(request.app.state.redis, child_id)
         await Chats.delete_chat_by_id_and_user_id(child_id, chat.user_id)
 
@@ -1700,6 +1706,7 @@ async def delete_chat_by_id(
         result = await Chats.delete_chat_by_id_and_user_id(id, user.id, db=db)
 
     if result:
+        file_cleanup.cleanup_files_later(cleanup_file_ids)
         await publish_event(
             request,
             EVENTS.CHAT_DELETED,
