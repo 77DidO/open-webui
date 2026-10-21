@@ -48,25 +48,28 @@
 		$sessionUser &&
 		($sessionUser.role === 'admin' || ($sessionUser.permissions?.chat?.import ?? true));
 
-	$: if ($page.params.id) {
-		(async () => {
-			if (await loadSharedChat()) {
-				loaded = true;
+	// RAGWiame : le chargement vit dans une fonction. Écrit directement dans le bloc `$:`, il lisait `history` et
+	// `messagesComponent` : Svelte relançait le bloc à chaque `history` remplacé par loadSharedChat, d'où une boucle
+	// (rechargement ~30 fois/s, page ramenée en bas ou sur le message visé, défilement impossible).
+	$: if ($page.params.id) openSharedChat();
+
+	const openSharedChat = async () => {
+		if (await loadSharedChat()) {
+			loaded = true;
+			await tick();
+			const target = $page.url.searchParams.get('message');
+			if (target && history.messages[target]) {
+				autoScroll = false;
+				history.currentId = getDeepestChildId(history, target);
 				await tick();
-				const target = $page.url.searchParams.get('message');
-				if (target && history.messages[target]) {
-					autoScroll = false;
-					history.currentId = getDeepestChildId(history, target);
-					await tick();
-					await messagesComponent?.scrollToMessage(target);
-				} else messagesComponent?.scrollToBottom();
-			} else if (localStorage.token) {
-				await goto('/');
-			} else {
-				await goto(`/auth?redirect=${encodeURIComponent($page.url.pathname)}`);
-			}
-		})();
-	}
+				await messagesComponent?.scrollToMessage(target);
+			} else messagesComponent?.scrollToBottom();
+		} else if (localStorage.token) {
+			await goto('/');
+		} else {
+			await goto(`/auth?redirect=${encodeURIComponent($page.url.pathname)}`);
+		}
+	};
 
 	//////////////////////////
 	// Web functions
