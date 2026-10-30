@@ -408,6 +408,7 @@ export const chatCompletion = async (
 	const useRag = body?.metadata?.use_rag ?? null;
 	// @ts-ignore
 	const useWeb = body?.metadata?.use_web ?? null;
+	const useReasoning = body?.metadata?.use_reasoning ?? null;
 
 	const res = await fetch(`${url}/chat/completions`, {
 		signal: controller.signal,
@@ -416,7 +417,8 @@ export const chatCompletion = async (
 			Authorization: `Bearer ${token}`,
 			'Content-Type': 'application/json',
 			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {}),
-			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {})
+			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {}),
+			...(useReasoning !== null ? { 'X-Use-Reasoning': String(useReasoning) } : {})
 		},
 		body: JSON.stringify(body)
 	}).catch((err) => {
@@ -443,6 +445,7 @@ export const generateOpenAIChatCompletion = async (
 	const useRag = body?.metadata?.use_rag ?? null;
 	// @ts-ignore
 	const useWeb = body?.metadata?.use_web ?? null;
+	const useReasoning = body?.metadata?.use_reasoning ?? null;
 
 	const res = await fetch(`${url}/chat/completions`, {
 		method: 'POST',
@@ -450,7 +453,8 @@ export const generateOpenAIChatCompletion = async (
 			Authorization: `Bearer ${token}`,
 			'Content-Type': 'application/json',
 			...(useRag !== null ? { 'X-Use-RAG': String(useRag) } : {}),
-			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {})
+			...(useWeb !== null ? { 'X-Use-Web': String(useWeb) } : {}),
+			...(useReasoning !== null ? { 'X-Use-Reasoning': String(useReasoning) } : {})
 		},
 		credentials: 'include',
 		body: JSON.stringify(body)

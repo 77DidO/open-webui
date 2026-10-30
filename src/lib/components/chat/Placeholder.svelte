@@ -69,6 +69,7 @@
 	export let oauthRedirectHandler: Function = () => {};
 	export let ragEnabled = true;
 	export let gatewayWebEnabled = false;
+	export let reasoningEnabled = false;
 
 	export let onUpload: Function = (e) => {};
 	export let onUpdate: (data?: { file?: any }) => void = () => {};
@@ -264,6 +265,7 @@
 						bind:webSearchEnabled
 						bind:ragEnabled
 						bind:gatewayWebEnabled
+						bind:reasoningEnabled
 						bind:atSelectedModel
 						bind:showCommands
 						bind:dragged

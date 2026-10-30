@@ -508,6 +508,18 @@
 		_prevRagEnabled = ragEnabled;
 	};
 	$: enforceRagWebExclusivity(ragEnabled, gatewayWebEnabled);
+	// Raisonnement côté gateway (bouton « Raisonnement », header X-Use-Reasoning) : le modèle réfléchit avant de répondre,
+	// réflexion affichée. S'allume tout seul quand un fichier est ajouté (la gateway raisonne toujours sur un fichier
+	// joint) ; l'utilisateur peut l'éteindre ensuite, seul un nouvel ajout le rallume.
+	let reasoningEnabled = false;
+	let _prevFileCount = 0;
+	const lightReasoningOnNewFile = (count: number) => {
+		if (count > _prevFileCount) {
+			reasoningEnabled = true;
+		}
+		_prevFileCount = count;
+	};
+	$: lightReasoningOnNewFile(files?.length ?? 0);
 	let chatVariables = {};
 	let showChatVariablesModal = false;
 	let loadedChatIdProp = '';
@@ -4368,7 +4380,7 @@
 				...(useChatVariablesFallback ? { chat_variables: chatVariables } : {}),
 				model_item: $models.find((m) => m.id === model.id),
 
-				metadata: { use_rag: ragEnabled, use_web: gatewayWebEnabled },
+				metadata: { use_rag: ragEnabled, use_web: gatewayWebEnabled, use_reasoning: reasoningEnabled },
 				session_id: $socket?.id,
 				chat_id: _chatId || undefined,
 				folder_id: $selectedFolder?.id ?? undefined,
@@ -5294,6 +5306,7 @@
 										bind:showCommands
 										bind:ragEnabled
 										bind:gatewayWebEnabled
+										bind:reasoningEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -5393,6 +5406,7 @@
 										bind:showCommands
 										bind:ragEnabled
 										bind:gatewayWebEnabled
+										bind:reasoningEnabled
 										bind:dragged
 										dropzoneId={messageInputDropzoneId}
 										chatId={$chatId}
@@ -5457,6 +5471,7 @@
 									bind:showCommands
 									bind:ragEnabled
 									bind:gatewayWebEnabled
+									bind:reasoningEnabled
 									bind:dragged
 									{toolApprovalMode}
 									onToolApprovalModeChange={handleToolApprovalModeChange}

@@ -1380,6 +1380,11 @@ async def chat_completion(
         if x_use_web is not None:
             metadata["use_web"] = x_use_web.lower() == "true"
 
+        # RAGWiame: Read X-Use-Reasoning header (bouton « Raisonnement », réflexion du modèle côté gateway)
+        x_use_reasoning = request.headers.get("x-use-reasoning")
+        if x_use_reasoning is not None:
+            metadata["use_reasoning"] = x_use_reasoning.lower() == "true"
+
         if is_new_chat:
             metadata['chat_id'] = str(uuid4())
 

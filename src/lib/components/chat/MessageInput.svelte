@@ -219,6 +219,7 @@
 	export let onToolApprovalModeChange: Function = () => {};
 	export let ragEnabled = true;
 	export let gatewayWebEnabled = false;
+	export let reasoningEnabled = false;
 
 	export let pendingOAuthTools: {
 		id: string;
@@ -2469,6 +2470,36 @@
 												/>
 											</svg>
 											<span>Web</span>
+										</button>
+									</Tooltip>
+
+									<!-- RAGWiame : bouton « Raisonnement » (header X-Use-Reasoning), allumé tout seul à l'ajout d'un fichier -->
+									<Tooltip
+										content={reasoningEnabled
+											? 'Raisonnement activé : le modèle réfléchit avant de répondre (quelques secondes de plus)'
+											: 'Raisonnement désactivé (toujours actif quand un fichier est joint)'}
+										placement="top"
+									>
+										<button
+											aria-label={reasoningEnabled ? 'Désactiver le raisonnement' : 'Activer le raisonnement'}
+											aria-pressed={reasoningEnabled}
+											on:click|preventDefault={() => (reasoningEnabled = !reasoningEnabled)}
+											type="button"
+											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {reasoningEnabled
+												? 'text-violet-700 dark:text-violet-300 bg-violet-50 hover:bg-violet-100 dark:bg-violet-300/10 dark:hover:bg-violet-300/20 border border-violet-200/40 dark:border-violet-300/20'
+												: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+												class="size-3.5"
+											>
+												<path
+													d="M10 1a6 6 0 0 0-3.815 10.631C7.237 12.5 8 13.443 8 14.456v.644a.75.75 0 0 0 .572.729 6.016 6.016 0 0 0 2.856 0A.75.75 0 0 0 12 15.1v-.644c0-1.013.762-1.957 1.815-2.825A6 6 0 0 0 10 1ZM8.863 17.414a.75.75 0 0 0-.226 1.483 9.066 9.066 0 0 0 2.726 0 .75.75 0 0 0-.226-1.483 7.553 7.553 0 0 1-2.274 0Z"
+												/>
+											</svg>
+											<span>Raisonnement</span>
 										</button>
 									</Tooltip>
 
