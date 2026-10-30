@@ -2476,8 +2476,8 @@
 									<!-- RAGWiame : bouton « Raisonnement » (header X-Use-Reasoning), allumé tout seul à l'ajout d'un fichier -->
 									<Tooltip
 										content={reasoningEnabled
-											? 'Raisonnement activé : le modèle réfléchit avant de répondre (quelques secondes de plus)'
-											: 'Raisonnement désactivé (toujours actif quand un fichier est joint)'}
+											? 'Le modèle réfléchit avant de répondre : plus fiable sur les questions complexes, mais plus lent. Cliquez pour désactiver.'
+											: 'Cliquez pour que le modèle réfléchisse avant de répondre (plus fiable, plus lent). S'active tout seul quand vous joignez un fichier.'}
 										placement="top"
 									>
 										<button
