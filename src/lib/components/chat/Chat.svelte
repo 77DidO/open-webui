@@ -2984,6 +2984,11 @@
 				params = structuredClone(chatContent?.params ?? {});
 				delete params.note_id;
 				chatFiles = structuredClone(chatContent?.files ?? []);
+				// RAGWiame : conversation rouverte avec un fichier dans l'historique → bouton « Raisonnement » rallumé (il ne
+				// s'allumait qu'à l'ajout d'un fichier : 13 tours sans réflexion le 31/10/2026, en-tête X-Use-Reasoning false)
+				reasoningEnabled =
+					chatFiles.length > 0 ||
+					Object.values(history?.messages ?? {}).some((m) => (m?.files ?? []).length > 0);
 
 				// Load tasks from chat-level DB field
 				chatTasks = chat?.tasks ?? [];

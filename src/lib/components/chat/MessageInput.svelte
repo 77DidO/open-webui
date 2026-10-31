@@ -220,6 +220,11 @@
 	export let ragEnabled = true;
 	export let gatewayWebEnabled = false;
 	export let reasoningEnabled = false;
+	// RAGWiame : fichier joint ou déjà dans la conversation (Open WebUI le rejoint à chaque tour) → avertissement sur le
+	// bouton Web : les recherches, rédigées à partir du fichier, partent vers des moteurs externes (demande du 30/10/2026)
+	$: fileInChat =
+		(files?.length ?? 0) > 0 ||
+		Object.values(history?.messages ?? {}).some((m: any) => (m?.files ?? []).length > 0);
 
 	export let pendingOAuthTools: {
 		id: string;
@@ -2440,10 +2445,13 @@
 										</button>
 									</Tooltip>
 
+									<!-- RAGWiame : bouton Web orangé et avertissement quand un fichier est dans la conversation -->
 									<Tooltip
-										content={gatewayWebEnabled
-											? 'Recherche web activée : la question sera envoyée à un moteur de recherche externe'
-											: 'Recherche web désactivée'}
+										content={gatewayWebEnabled && fileInChat
+											? '⚠️ Web avec un fichier joint : les recherches sont rédigées à partir de votre question et du fichier, puis envoyées à des moteurs de recherche externes. Pour un document confidentiel, désactivez le Web.'
+											: gatewayWebEnabled
+												? 'Recherche web activée : la question sera envoyée à un moteur de recherche externe'
+												: 'Recherche web désactivée'}
 										placement="top"
 									>
 										<button
@@ -2451,9 +2459,12 @@
 											aria-pressed={gatewayWebEnabled}
 											on:click|preventDefault={() => (gatewayWebEnabled = !gatewayWebEnabled)}
 											type="button"
-											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {gatewayWebEnabled
-												? 'text-sky-700 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-300/10 dark:hover:bg-sky-300/20 border border-sky-200/40 dark:border-sky-300/20'
-												: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
+											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {gatewayWebEnabled &&
+											fileInChat
+												? 'text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-300/10 dark:hover:bg-amber-300/20 border border-amber-200/40 dark:border-amber-300/20'
+												: gatewayWebEnabled
+													? 'text-sky-700 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-300/10 dark:hover:bg-sky-300/20 border border-sky-200/40 dark:border-sky-300/20'
+													: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
 										>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
@@ -2467,7 +2478,7 @@
 													clip-rule="evenodd"
 												/>
 											</svg>
-											<span>Web</span>
+											<span>Web{gatewayWebEnabled && fileInChat ? ' ⚠️' : ''}</span>
 										</button>
 									</Tooltip>
 
