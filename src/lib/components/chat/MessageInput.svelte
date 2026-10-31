@@ -2418,33 +2418,6 @@
 										</button>
 									</InputMenu>
 
-									<Tooltip
-										content={ragEnabled ? $i18n.t('RAG Enabled') : $i18n.t('RAG Disabled')}
-										placement="top"
-									>
-										<button
-											aria-label={ragEnabled ? $i18n.t('Disable RAG') : $i18n.t('Enable RAG')}
-											aria-pressed={ragEnabled}
-											on:click|preventDefault={() => (ragEnabled = !ragEnabled)}
-											type="button"
-											class="group px-2 py-[7px] mx-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {ragEnabled
-												? 'text-yellow-700 dark:text-[#FFD300] bg-yellow-50 hover:bg-yellow-100 dark:bg-[#FFD300]/10 dark:hover:bg-[#FFD300]/20 border border-yellow-200/40 dark:border-[#FFD300]/20'
-												: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
-										>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												class="size-3.5"
-											>
-												<path
-													d="M10.75 16.82A7.462 7.462 0 0115 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0018 15.06v-11a.75.75 0 00-.546-.721A9.006 9.006 0 0015 3a8.963 8.963 0 00-4.25 1.065V16.82zM9.25 4.065A8.963 8.963 0 005 3c-.85 0-1.673.118-2.454.339A.75.75 0 002 4.06v11a.75.75 0 00.954.721A7.506 7.506 0 015 15.5c1.579 0 3.042.487 4.25 1.32V4.065z"
-												/>
-											</svg>
-											<span>RAG</span>
-										</button>
-									</Tooltip>
-
 									<!-- RAGWiame : bouton Web orangé et avertissement quand un fichier est dans la conversation -->
 									<Tooltip
 										content={gatewayWebEnabled && fileInChat
@@ -2459,9 +2432,9 @@
 											aria-pressed={gatewayWebEnabled}
 											on:click|preventDefault={() => (gatewayWebEnabled = !gatewayWebEnabled)}
 											type="button"
-											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {gatewayWebEnabled &&
+											class="group px-2 py-[7px] mx-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {gatewayWebEnabled &&
 											fileInChat
-												? 'text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-300/10 dark:hover:bg-amber-300/20 border border-amber-200/40 dark:border-amber-300/20'
+												? 'text-orange-700 dark:text-orange-300 bg-orange-50 hover:bg-orange-100 dark:bg-orange-500/20 dark:hover:bg-orange-500/30 border border-orange-300/60 dark:border-orange-400/40'
 												: gatewayWebEnabled
 													? 'text-sky-700 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-300/10 dark:hover:bg-sky-300/20 border border-sky-200/40 dark:border-sky-300/20'
 													: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
@@ -2509,6 +2482,34 @@
 												/>
 											</svg>
 											<span>Raisonnement</span>
+										</button>
+									</Tooltip>
+
+									<!-- RAGWiame : ordre Web, Raisonnement, RAG (demande du 31/10/2026) -->
+									<Tooltip
+										content={ragEnabled ? $i18n.t('RAG Enabled') : $i18n.t('RAG Disabled')}
+										placement="top"
+									>
+										<button
+											aria-label={ragEnabled ? $i18n.t('Disable RAG') : $i18n.t('Enable RAG')}
+											aria-pressed={ragEnabled}
+											on:click|preventDefault={() => (ragEnabled = !ragEnabled)}
+											type="button"
+											class="group px-2 py-[7px] mr-1 flex gap-1.5 items-center text-xs font-medium rounded-full transition-colors duration-300 focus:outline-hidden max-w-full overflow-hidden {ragEnabled
+												? 'text-yellow-700 dark:text-[#FFD300] bg-yellow-50 hover:bg-yellow-100 dark:bg-[#FFD300]/10 dark:hover:bg-[#FFD300]/20 border border-yellow-200/40 dark:border-[#FFD300]/20'
+												: 'text-gray-500 dark:text-gray-400 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700/30 dark:hover:bg-gray-700/50 border border-gray-200/40 dark:border-gray-600/20'}"
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+												class="size-3.5"
+											>
+												<path
+													d="M10.75 16.82A7.462 7.462 0 0115 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0018 15.06v-11a.75.75 0 00-.546-.721A9.006 9.006 0 0015 3a8.963 8.963 0 00-4.25 1.065V16.82zM9.25 4.065A8.963 8.963 0 005 3c-.85 0-1.673.118-2.454.339A.75.75 0 002 4.06v11a.75.75 0 00.954.721A7.506 7.506 0 015 15.5c1.579 0 3.042.487 4.25 1.32V4.065z"
+												/>
+											</svg>
+											<span>RAG</span>
 										</button>
 									</Tooltip>
 
