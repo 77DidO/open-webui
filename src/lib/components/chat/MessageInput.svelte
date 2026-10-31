@@ -2165,6 +2165,8 @@
 									{#if suggestions}
 										{#key $settings?.richTextInput ?? true}
 											{#key $settings?.showFormattingToolbar ?? false}
+												<!-- RAGWiame : pas de 1re question de suite en gris dans la zone de saisie (amont 0.12, sans réglage,
+												     pris pour une question déjà tapée) ; la liste des suggestions sous la réponse reste -->
 												<RichTextInput
 													bind:this={chatInputElement}
 													id="chat-input"
@@ -2177,11 +2179,7 @@
 													json={true}
 													richText={$settings?.richTextInput ?? true}
 													messageInput={true}
-													followUpSuggestion={!generating &&
-													history?.messages?.[history?.currentId]?.role === 'assistant' &&
-													history?.messages?.[history?.currentId]?.done
-														? (history.messages[history.currentId].followUps?.[0] ?? '')
-														: ''}
+													followUpSuggestion={''}
 													showFormattingToolbar={$settings?.showFormattingToolbar ?? false}
 													floatingMenuPlacement={'top-start'}
 													insertPromptAsRichText={$settings?.insertPromptAsRichText ?? false}
