@@ -492,8 +492,10 @@
 
 	let params = {};
 	let ragEnabled = false;
-	// Recherche web côté gateway (bouton « Web », header X-Use-Web) — distincte de la recherche web native d'Open WebUI
-	let gatewayWebEnabled = false;
+	// Recherche web côté gateway (bouton « Web », header X-Use-Web) — distincte de la recherche web native d'Open WebUI.
+	// Allumé par défaut depuis le 01/11/2026 : la gateway laisse le modèle décider s'il cherche (WEB_TOOL_AUTO). Éteint
+	// tout seul avec un fichier ou le Raisonnement (rien ne part sur internet sans que l'utilisateur le rallume).
+	let gatewayWebEnabled = true;
 	// RAG et Web s'excluent : le dernier toggle activé l'emporte (une seule instruction réactive,
 	// deux blocs `$:` croisés provoqueraient une dépendance cyclique refusée par le compilateur)
 	let _prevRagEnabled = ragEnabled;
@@ -516,10 +518,21 @@
 	const lightReasoningOnNewFile = (count: number) => {
 		if (count > _prevFileCount) {
 			reasoningEnabled = true;
+			gatewayWebEnabled = false;
 		}
 		_prevFileCount = count;
 	};
 	$: lightReasoningOnNewFile(files?.length ?? 0);
+	// Raisonnement allumé (à la main ou par un fichier) → Web éteint : avec réflexion, le modèle cherchait sans besoin
+	// (5 messages sur 26, 31/10/2026). L'utilisateur peut rallumer le Web ensuite.
+	let _prevReasoningEnabled = reasoningEnabled;
+	const webOffWhenReasoning = (reasoning: boolean) => {
+		if (reasoning && !_prevReasoningEnabled) {
+			gatewayWebEnabled = false;
+		}
+		_prevReasoningEnabled = reasoning;
+	};
+	$: webOffWhenReasoning(reasoningEnabled);
 	let chatVariables = {};
 	let showChatVariablesModal = false;
 	let loadedChatIdProp = '';
@@ -2794,6 +2807,8 @@
 		};
 
 		chatFiles = [];
+		// RAGWiame : nouvelle conversation = bouton Web allumé (sauf RAG coché ou Raisonnement resté allumé)
+		gatewayWebEnabled = !reasoningEnabled && !ragEnabled;
 		params = {};
 		chatVariables = {};
 		taskIds = null;
@@ -2989,6 +3004,8 @@
 				reasoningEnabled =
 					chatFiles.length > 0 ||
 					Object.values(history?.messages ?? {}).some((m) => (m?.files ?? []).length > 0);
+				// Web allumé par défaut, sauf conversation avec fichier (Raisonnement allumé) ou RAG coché
+				gatewayWebEnabled = !reasoningEnabled && !ragEnabled;
 
 				// Load tasks from chat-level DB field
 				chatTasks = chat?.tasks ?? [];

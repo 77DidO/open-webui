@@ -2423,7 +2423,7 @@
 										content={gatewayWebEnabled && fileInChat
 											? '⚠️ Web avec un fichier joint : les recherches sont rédigées à partir de votre question et du fichier, puis envoyées à des moteurs de recherche externes. Pour un document confidentiel, désactivez le Web.'
 											: gatewayWebEnabled
-												? 'Recherche web activée : la question sera envoyée à un moteur de recherche externe'
+												? "Recherche web activée : l’IA cherche sur internet quand la question le demande (les recherches partent vers des moteurs externes). Pour un sujet confidentiel, désactivez le Web."
 												: 'Recherche web désactivée'}
 										placement="top"
 									>
